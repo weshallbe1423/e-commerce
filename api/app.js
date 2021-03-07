@@ -8,8 +8,10 @@ require('./config/initMongodb');
 app.use(logger('dev'));
 app.use(cors());
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
 
 
+require('./routes/user.route')(app);
 //error handling 404
 app.use((req,res,next)=>{
     next(createError.NotFound());

@@ -1,0 +1,16 @@
+POST http://localhost:3000/signUp
+Content-Type: application/json
+
+{
+    "email":"test2@gmail.com",
+    "password":"test2@gmail.com",
+    "userType":"user"
+}
+#######
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email":"test2@gmail.com",
+    "password":"test2@gmail.com"
+}
