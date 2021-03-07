@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 require('dotenv').config();
-
+//init mongodb
 mongoose.connect(process.env.MONGO_URL,{
     useCreateIndex:true,
     useNewUrlParser:true,
