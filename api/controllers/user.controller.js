@@ -2,7 +2,7 @@
 const User=require('../models/user.model');
 const createError=require('http-errors');
 const bcrypt=require('bcrypt');
-const {signAccessToken} =require('../middleware/authcheck.middleware');
+const {signAccessToken,signRefreshToken} =require('../middleware/authcheck.middleware');
 const {authSchema} =require('../helper/validate.schema');
 //signup user
 exports.signUp=async (req,res,next)=>{
@@ -17,10 +17,12 @@ exports.signUp=async (req,res,next)=>{
              const user=new User(resultSchema);
              const resp= await user.save();
              const token = await signAccessToken(resp.id)
+             const refreshToken=await signRefreshToken(resp.id);
             res.send({
                 message:"user created successfully",
                 userDetails:resp,
-                accessToken:token
+                accessToken:token,
+                refreshToken:refreshToken
             })
          }
     }
@@ -33,16 +35,40 @@ exports.signUp=async (req,res,next)=>{
 //login user
 exports.login=async(req,res,next)=>{
     try{
+        console.log(req.body)
         const result=await authSchema.validateAsync(req.body);
         const user= await User.findOne({email:result.email});
         if(!user) throw createError.NotFound('User not found');
         const isMatch=await user.isValidPassword(result.password);
         if(!isMatch) throw createError.Unauthorized('Username/Password not valid');
         let accessToken=await signAccessToken(user.id);
-        res.send({accessToken});
+        let refreshToken=await signRefreshToken(user.id);
+        res.send({accessToken,refreshToken});
     }catch(err){
         if(err.isJoi===true) err.status=422;
         next(err)
     }
    
+}
+exports.getUser=(req,res,next)=>{
+    try {
+        console.log(req.headers['authorization'])
+        res.send('Token');
+    } catch (error) {
+        next(error);
+    }
+}
+
+exports.generateRefreshToken=async(req,res,next)=>{
+    try {
+        const{refreshToken}=req.body;
+        if(!refreshToken) throw createError.Unauthorized();
+        const userId=await signRefreshToken(refreshToken);
+        const accessToken=await signAccessToken(userId);
+        const refToken=await signRefreshToken(userId);
+        res.send({accessToken:accessToken,refreshToken:refToken});        
+    } catch (error) {
+        next(error);
+    }
+
 }

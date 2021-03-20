@@ -12,5 +12,16 @@ Content-Type: application/json
 
 {
      "email":"admin@gmail.com",
-    "password":"admin@gmail.com"
+     "password":"admin@gmail.com"
+}
+
+####
+GET http://localhost:3000/getUsers
+
+###
+POST http://localhost:3000/refresh-token
+Content-Type: application/json
+
+{
+    "refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTUyOTM4NjcsImV4cCI6MTYxNTM4MDI2NywiYXVkIjoiNjA0NzFmZjJiOTFkYjcwOGIwYzU2Yzk0IiwiaXNzIjoidmlzaGFsbmlrIn0.vsQ4o4EkMMD6FISkFP_SctgNYEFDo0Ggz-W02_-FOW8"
 }
